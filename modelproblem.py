@@ -1,35 +1,43 @@
+import os
+from pprint import pprint
 import petab
+import pypesto.petab
 from petab.v1.parameters import get_priors_from_df
+import benchmark_models_petab as models
 from scipy.stats import uniform, norm
-import pypesto.objective.roadrunner as pypesto_rr
+
+
 class ModelProblem():
 	def __init__(self, model_string):
 		self.model_name = model_string
 
 	def initialize(self):
 		model_name =  self.model_name
-	   
-		petab_yaml = f"./{model_name}/{model_name}.yaml"
+		print(f"The location of the model directory is: {models.MODELS_DIR}")
+		# the yaml configuration file links to all needed files
+		petab_yaml = os.path.join(models.MODELS_DIR, model_name, model_name + ".yaml")
+
 		petab_problem = petab.v1.Problem.from_yaml(petab_yaml)
-		importer = pypesto_rr.PetabImporterRR(petab_problem)
-		problem = importer.create_problem()
+		importer = pypesto.petab.PetabImporter(petab_problem)
 
-		# set tolerances for ode solver
-		if self.model_name == "Hopf":
-			#solver_options = pypesto_rr.SolverOptions(
-			#	integrator="rk45"
-			#	)
-			#problem.objective.solver_options = solver_options
-			pass
-		else:
-			solver_options = pypesto_rr.SolverOptions(
-				relative_tolerance = 1e-16,
-				absolute_tolerance = 1e-8
-				)
-			problem.objective.solver_options = solver_options
-
+		model = importer.create_model(verbose=False)
+		obj = importer.create_objective()
+		obj.amici_solver.setRelativeTolerance(1e-8)
+		obj.amici_solver.setAbsoluteTolerance(1e-12)
+		problem = importer.create_problem(obj, startpoint_kwargs={"check_fval": True})
+	
+		self.model = model
 		self.problem = problem
 		self.petab_problem = petab_problem
+		"""self.obj = obj
+
+		ret = obj(
+			petab_problem.x_nominal_scaled,
+			mode="mode_fun",
+			return_dict=True,
+		)
+		pprint(ret); 
+		"""
 		prior_info = get_priors_from_df(petab_problem.parameter_df,
 								  mode="objective")
 		self.prior_info = prior_info
