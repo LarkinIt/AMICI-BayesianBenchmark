@@ -19,16 +19,22 @@ class Result:
 			self.posterior_weights = np.array([1.0/n]*n)
 			
 
-	def get_sampling_ratio(self, par_bounds, par_idx=0) -> float:
+	def get_sampling_ratio(self, par_bounds, par_idx=0, unlog=True) -> float:
 		"""
 		Measures the ratio of the sampling space 
 		explored for a given parameter index
 		"""
 		bound_diff = par_bounds[par_idx][1] - par_bounds[par_idx][0]
+		#print(self.all_samples.shape)
 		par_samples = self.all_samples[:, :, par_idx]
+		if unlog:
+			par_samples = 10**par_samples
+		#print("HERE: ", par_samples)
+		#print(bound_diff)
 		max_val = np.max(par_samples)
 		min_val = np.min(par_samples)
 		sample_diff = max_val - min_val
+		#print(sample_diff)
 		return sample_diff/bound_diff
 	
 	def get_convergence(self, llh_threshold):
