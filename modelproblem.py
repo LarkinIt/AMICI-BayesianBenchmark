@@ -3,7 +3,6 @@ from pprint import pprint
 import petab
 import pypesto.petab
 from petab.v1.parameters import get_priors_from_df
-import benchmark_models_petab as models
 from scipy.stats import uniform, norm
 
 
@@ -13,9 +12,8 @@ class ModelProblem():
 
 	def initialize(self):
 		model_name =  self.model_name
-		print(f"The location of the model directory is: {models.MODELS_DIR}")
 		# the yaml configuration file links to all needed files
-		petab_yaml = os.path.join(models.MODELS_DIR, model_name, model_name + ".yaml")
+		petab_yaml = f"{model_name}/{model_name}.yaml"
 
 		petab_problem = petab.v1.Problem.from_yaml(petab_yaml)
 		importer = pypesto.petab.PetabImporter(petab_problem)
