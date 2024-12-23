@@ -6,6 +6,7 @@
 #SBATCH --mail-user=caroline.larkin@pitt.edu
 
 export PATH=/net/dali/home/mscbio/cil8/.local/bin:$PATH
+export PATH=/net/dali/home/faeder/cil8/.local/bin:$PATH
 export CPPFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
 
 module unload anaconda
