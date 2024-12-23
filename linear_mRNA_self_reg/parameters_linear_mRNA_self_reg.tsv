@@ -1,7 +1,0 @@
-parameterId	parameterScale	lowerBound	upperBound	nominalValue	estimate
-param0	lin	0	50	10	1
-param1	lin	0	10	0.5	1
-param2	lin	0	50	10	1
-param3	lin	0	10	2	1
-dummy	lin	0	10	5	1
-param4	lin	0	1	1	0

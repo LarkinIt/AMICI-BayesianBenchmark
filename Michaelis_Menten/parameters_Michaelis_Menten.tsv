@@ -1,4 +1,0 @@
-parameterId	parameterScale	lowerBound	upperBound	nominalValue	estimate	objectivePriorType
-log_k1	lin	-3	1	-2.77	1	parameterScaleUniform
-log_k2	lin	-1	3	-1	1	parameterScaleUniform
-log_k3	lin	-3	3	-2	1	parameterScaleUniform

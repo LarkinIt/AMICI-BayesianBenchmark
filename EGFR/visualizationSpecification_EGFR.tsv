@@ -1,9 +1,0 @@
-plotId	plotName	plotTypeSimulation	plotTypeData	datasetId	xValues	xOffset	xLabel	yValues	yOffset	yLabel	legendEntry	xScale	yScale
-plot1	observable_EGFRPtotal	LinePlot	MeanAndSD	C1_observable_EGFRPtotal	time	0	 Time  [s] 	observable_EGFRPtotal	0	 EGFRPtotal  [nM] 	EGFRPtotal(EGF_0.2)	lin	lin
-plot1	observable_EGFRPtotal	LinePlot	MeanAndSD	C2_observable_EGFRPtotal	time	0	 Time  [s] 	observable_EGFRPtotal	0	 EGFRPtotal  [nM] 	EGFRPtotal(EGF_2)	lin	lin
-plot1	observable_EGFRPtotal	LinePlot	MeanAndSD	C3_observable_EGFRPtotal	time	0	 Time  [s] 	observable_EGFRPtotal	0	 EGFRPtotal  [nM] 	EGFRPtotal(EGF_20)	lin	lin
-plot2	observable_ShPtotal	LinePlot	MeanAndSD	C3_observable_ShPtotal	time	0	 Time  [s] 	observable_ShPtotal	0	 ShPtotal  [nM] 	ShPtotal(EGF_20)	lin	lin
-plot3	observable_Grb2Shctotal	LinePlot	MeanAndSD	C3_observable_Grb2Shctotal	time	0	 Time  [s] 	observable_Grb2Shctotal	0	 Grb2Shctotal  [nM] 	Grb2Shctotal(EGF_20)	lin	lin
-plot3	observable_Grb2EGFRtotal	LinePlot	MeanAndSD	C3_observable_Grb2EGFRtotal	time	0	 Time  [s] 	observable_Grb2EGFRtotal	0	 Grb2EGFRtotal  [nM] 	Grb2EGFRtotal(EGF_20)	lin	lin
-plot4	observable_PLCgPtotal	LinePlot	MeanAndSD	C2_observable_PLCgPtotal	time	0	 Time  [s] 	observable_PLCgPtotal	0	 PLCgPtotal  [nM] 	PLCgPtotal(EGF_2)	lin	lin
-plot4	observable_PLCgPtotal	LinePlot	MeanAndSD	C3_observable_PLCgPtotal	time	0	 Time  [s] 	observable_PLCgPtotal	0	 PLCgPtotal  [nM] 	PLCgPtotal(EGF_20)	lin	lin
