@@ -10,3 +10,4 @@ sd_pSTAT5A_rel	\sigma_{pSTAT5A,rel}	log10	1E-05	100000	3.85261197844677	1
 sd_pSTAT5B_rel	\sigma_{pSTAT5B,rel}	log10	1E-05	100000	6.59147818673419	1
 sd_rSTAT5A_rel	\sigma_{rSTAT5A,rel}	log10	1E-05	100000	3.15271275648527	1
 specC17	specC17	lin	-5	5	0.107	0
+dummy	dummy	log10	1e-5	1e5	1e0	1

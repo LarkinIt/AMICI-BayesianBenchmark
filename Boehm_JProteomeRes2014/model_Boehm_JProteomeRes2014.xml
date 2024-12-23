@@ -64,6 +64,7 @@
       <parameter id="ratio" value="0.693" constant="true"/>
       <parameter id="specC17" value="0.107" constant="true"/>
       <parameter id="BaF3_Epo" value="1.25e-07" constant="false"/>
+      <parameter id="dummy" value="1e0" constant="true"/>
     </listOfParameters>
     <listOfInitialAssignments>
       <initialAssignment symbol="STAT5A">
