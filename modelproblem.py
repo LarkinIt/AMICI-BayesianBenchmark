@@ -18,7 +18,7 @@ class ModelProblem():
 		petab_problem = petab.v1.Problem.from_yaml(petab_yaml)
 		importer = pypesto.petab.PetabImporter(petab_problem)
 
-		model = importer.create_model(verbose=False)
+		model = importer.create_model(verbose=True, force_compile=True)
 		obj = importer.create_objective()
 		obj.amici_solver.setRelativeTolerance(1e-8)
 		obj.amici_solver.setAbsoluteTolerance(1e-12)

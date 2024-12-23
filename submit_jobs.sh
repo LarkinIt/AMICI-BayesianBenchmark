@@ -1,6 +1,6 @@
 #!/bin/bash
 
-seeds=({0..99..1})
+seeds=({0..9..1})
 declare -a probs=("Boehm_JProteomeRes2014")
 declare -a methods=("smc" "pmc")
 n_ensemble=1000
