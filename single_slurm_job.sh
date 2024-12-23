@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -N 1
 #SBATCH -p any_cpu
-#SBATCH --cpus-per-task=32
+#SBATCH --cpus-per-task=1
 #SBATCH --mail-type=END
 #SBATCH --mail-user=caroline.larkin@pitt.edu
 
