@@ -17,17 +17,17 @@ class ModelProblem():
 		petab_yaml = f"{model_name}/{model_name}.yaml"
 
 		petab_problem = petab.v1.Problem.from_yaml(petab_yaml)
-		sbml_importer = amici.SbmlImporter(f"{model_name}/model_{model_name}.xml")
+		#sbml_importer = amici.SbmlImporter(f"{model_name}/model_{model_name}.xml")
 		importer = pypesto.petab.PetabImporter(petab_problem)
-		problem = importer.create_problem(verbose=True)
+		#problem = importer.create_problem(verbose=True)
 
-		#model = importer.create_model(verbose=True, force_compile=True)
-		#obj = importer.create_objective()
-		#obj.amici_solver.setRelativeTolerance(1e-8)
-		#obj.amici_solver.setAbsoluteTolerance(1e-12)
-		#problem = importer.create_problem(obj, startpoint_kwargs={"check_fval": True})
+		model = importer.create_model(verbose=True)
+		obj = importer.create_objective()
+		obj.amici_solver.setRelativeTolerance(1e-8)
+		obj.amici_solver.setAbsoluteTolerance(1e-12)
+		problem = importer.create_problem(obj, startpoint_kwargs={"check_fval": True})
 	
-		#self.model = model
+		self.model = model
 		self.problem = problem
 		self.petab_problem = petab_problem
 		"""self.obj = obj
