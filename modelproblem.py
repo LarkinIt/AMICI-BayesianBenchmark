@@ -1,4 +1,5 @@
 import os
+import amici
 from pprint import pprint
 import petab
 import pypesto.petab
@@ -16,6 +17,7 @@ class ModelProblem():
 		petab_yaml = f"{model_name}/{model_name}.yaml"
 
 		petab_problem = petab.v1.Problem.from_yaml(petab_yaml)
+		sbml_importer = amici.SbmlImporter(f"{model_name}/model_{model_name}.xml")
 		importer = pypesto.petab.PetabImporter(petab_problem)
 		problem = importer.create_problem(verbose=True)
 
