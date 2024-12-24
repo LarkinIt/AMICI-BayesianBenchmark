@@ -1,6 +1,6 @@
 #!/bin/bash
 
-seeds=({0..1..1})
+seeds=({2..99..1})
 declare -a probs=("Raia_CancerResearch2011")
 declare -a methods=("smc" "pmc")
 n_ensemble=1000
