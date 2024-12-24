@@ -80,6 +80,7 @@
       <parameter id="pRec_intern" value="0.585096263629737" constant="true"/>
       <parameter id="pSTAT5_dephosphorylation" value="0.000274790322592677" constant="true"/>
       <parameter id="il13_level" value="0" constant="false"/>
+      <parameter id="dummy" value="1e0" constant="true"/>
     </listOfParameters>
     <listOfInitialAssignments>
       <initialAssignment symbol="Rec_i">

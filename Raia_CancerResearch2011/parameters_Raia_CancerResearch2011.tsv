@@ -38,3 +38,4 @@ sd_CD274mRNA_abs	sd_CD274mRNA_abs	log10	1E-05	1000	0.024	1
 sd_pSTAT5_abs	sd_pSTAT5_abs	log10	1E-05	1000	1.4	1
 sd_SOCS3_abs	sd_SOCS3_abs	log10	1E-05	1000	15	1
 sd_pJAK2_rel	sd_pJAK2_rel	log10	1E-05	1000	1.00E-05	1
+dummy	dummy	log10	1e-5	1e5	1e0	1
