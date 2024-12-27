@@ -1,12 +1,12 @@
 #!/bin/bash
 
 seeds=({0..99..1})
-declare -a probs=("Boehm_JProteomeRes2014")
+declare -a probs=("Raia_CancerResearch2011")
 declare -a methods=("ptmcmc")
 n_ensemble=1000
-n_iter=149750
+n_iter=615500
 ##### Declare anything else needed to pass as an arg below
-n_chains=4
+n_chains=8
 
 for prob in "${probs[@]}"; do
 	for method in "${methods[@]}"; do
