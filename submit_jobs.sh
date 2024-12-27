@@ -1,7 +1,7 @@
 #!/bin/bash
 
-seeds=({2..99..1})
-declare -a probs=("Raia_CancerResearch2011")
+seeds=({0..99..1})
+declare -a probs=("Zhao_QuantBiol2020" "Lucarelli_CellSystems2018")
 declare -a methods=("smc" "pmc")
 n_ensemble=1000
 ##### Declare anything else needed to pass as an arg below
