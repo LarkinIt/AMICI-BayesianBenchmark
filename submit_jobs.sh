@@ -1,6 +1,6 @@
 #!/bin/bash
 
-seeds=({0..99..1})
+seeds=({0..49..1})
 declare -a probs=("Zhao_QuantBiol2020" "Lucarelli_CellSystems2018")
 declare -a methods=("smc" "pmc")
 n_ensemble=1000
