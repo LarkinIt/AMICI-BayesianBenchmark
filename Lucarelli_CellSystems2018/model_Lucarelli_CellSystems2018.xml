@@ -185,6 +185,7 @@
       <parameter id="khomo3" value="0" constant="true"/>
       <parameter id="khomo4" value="0" constant="true"/>
       <parameter id="pRec_degind" value="0.0404498417896043" constant="true"/>
+      <parameter id="dummy" value="1e0" constant="true"/>
     </listOfParameters>
     <listOfInitialAssignments>
       <initialAssignment symbol="Rec">

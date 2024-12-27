@@ -28,3 +28,4 @@ sd_confirmed_infected_Hubei_Stage_I	sd_confirmed_infected_Hubei_Stage_I	log10	0.
 sd_confirmed_infected_Hubei_Stage_II	sd_confirmed_infected_Hubei_Stage_II	log10	0.001	100000	1000	1				
 sd_confirmed_infected_China_Stage_I	sd_confirmed_infected_China_Stage_I	log10	0.001	100000	1000	1				
 sd_confirmed_infected_China_Stage_II	sd_confirmed_infected_China_Stage_II	log10	0.001	100000	1000	1				
+dummy	dummy	log10	1e-5	1e5	1e0	1

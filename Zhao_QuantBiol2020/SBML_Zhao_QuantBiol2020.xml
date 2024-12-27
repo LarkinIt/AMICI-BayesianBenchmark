@@ -987,6 +987,7 @@ Stage II - 4000</pre>
           </COPASI>
         </annotation>
       </parameter>
+      <parameter id="dummy" value="1e0" constant="true"/>
     </listOfParameters>
     <listOfInitialAssignments>
       <initialAssignment symbol="Susceptible">
