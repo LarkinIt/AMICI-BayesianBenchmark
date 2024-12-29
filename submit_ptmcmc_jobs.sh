@@ -1,10 +1,10 @@
 #!/bin/bash
 
-seeds=({0..99..1})
-declare -a probs=("Raia_CancerResearch2011")
+seeds=({0..49..1})
+declare -a probs=("Zhao_QuantBiol2020")
 declare -a methods=("ptmcmc")
 n_ensemble=1000
-n_iter=615500
+n_iter=288387
 ##### Declare anything else needed to pass as an arg below
 n_chains=8
 
