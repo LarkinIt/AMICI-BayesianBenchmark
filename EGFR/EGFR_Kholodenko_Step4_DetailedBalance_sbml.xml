@@ -84,6 +84,7 @@
       <parameter id="r24_k24f" value="0.009"/>
       <parameter id="r25_k25f" value="1"/>
       <parameter id="r25_k25b" value="0.03"/>
+      <parameter id="dummy" value="1e0" constant="true"/>
       <!-- Dependent variables -->
       <parameter id="r12_k12b" constant="true"/>
       <parameter id="r21_k21b" constant="true"/>
