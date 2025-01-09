@@ -9,7 +9,7 @@ from modelproblem import ModelProblem
 from result_classes import Result,MethodResults
 from tqdm import tqdm
 
-prob_name = "Hopf"
+prob_name = "EGFR"
 methods = [ "ptmcmc", "smc", "pmc"]
 
 mod_prob = ModelProblem(prob_name)
