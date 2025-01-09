@@ -1,7 +1,7 @@
 #!/bin/bash
 
 seeds=({0..49..1})
-declare -a probs=("EGFR")
+declare -a probs=("Lucarelli_CellSystems2018")
 declare -a methods=("smc" "pmc")
 n_ensemble=1000
 ##### Declare anything else needed to pass as an arg below
