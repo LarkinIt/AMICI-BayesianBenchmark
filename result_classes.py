@@ -2,22 +2,109 @@ import itertools
 import numpy as np
 from scipy.stats import distributions
 
+LLH_CONVERGENCE_THRESHOLD = {
+	"Zhao_QuantBiol2020": -700,
+	"EGFR": 85,
+	"Raia_CancerResearch2011": -480
+}
+
 class Result:
-	def __init__(self, result_dict) -> None:
+	def __init__(self, result_dict, use_old_burnin=False) -> None:
 		for key in result_dict:
 			setattr(self, key, result_dict[key])
 		if self.method != "ptmcmc":
 			self.converged = True
 		
-		if self.method == "ptmcmc" and self.converged:
-			burn_in_idx = self.algo_specific_info["burn_in_idx"]
-			n_chains = self.n_chains
-			self.n_fun_calls = (burn_in_idx+1)*n_chains
+		else:
+			if use_old_burnin:
+				if self.converged:
+					burn_in_idx = self.algo_specific_info["burn_in_idx"]
+					n_chains = self.n_chains
+					self.n_fun_calls = (burn_in_idx+1)*n_chains
+			else:
+				threshold = LLH_CONVERGENCE_THRESHOLD[self.problem]
+				#print(f"For the {self.problem} problem, the llh threshold = {threshold}")
+				burn_in_idx = self.check_ptmcmc_convergence(threshold)
+				print(f"The burn-in index for run {self.seed} is {burn_in_idx} with threshold = {threshold}")
+				self.algo_specific_info["burn_in_idx"] = int(burn_in_idx)
+				if burn_in_idx == -1:
+					self.converged = False
+				else:
+					self.create_ptmcmc_posterior_ensemble()
 
 		if not("posterior_weights" in result_dict.keys()):
 			n = len(result_dict["posterior_llhs"])
 			self.posterior_weights = np.array([1.0/n]*n)
-			
+
+
+	# Courtesy of ChatGPT
+	def largest_step_size(self, L, N):
+		# Start from the largest possible step size (L-1) and work backwards
+		for i in range((L - 1) // (N - 1), 0, -1):
+			# Check if this step size allows exactly N samples within the bounds of L
+			if (N - 1) * i < L:
+				return i
+		return None  # Return None if no valid step size is found
+
+
+	def create_ptmcmc_posterior_ensemble(self):
+		# get the lowest temperature chain index
+		# Note: remember that beta is the inverse of the temperature so 
+		# we want the chain with the max beta
+		ch_idx = np.argmax(self.algo_specific_info["betas"])
+		diff = (self.n_iter - self.algo_specific_info["burn_in_idx"]) // self.sample_step
+
+		scaled_burn_in_idx = int(self.algo_specific_info["burn_in_idx"] // self.sample_step)
+		print(scaled_burn_in_idx, self.n_iter, diff, self.n_ensemble)
+		if diff < self.n_ensemble:
+			self.converged = False
+			# make empty lists to avert downstream errors
+			self.posterior_samples = np.empty((self.n_ensemble, self.all_samples.shape[-1]))
+			self.posterior_llhs = np.empty(self.n_ensemble)
+			self.posterior_priors = np.empty(self.n_ensemble)
+		else:
+			step_size = self.largest_step_size(diff, self.n_ensemble)
+			if not step_size:
+				self.converged = False
+			else:
+				print(self.all_samples.shape, self.all_llhs.shape, scaled_burn_in_idx)
+				trim_trace_x = self.all_samples[scaled_burn_in_idx:, ch_idx, :]
+				trim_trace_llhs = -1*self.all_llhs[scaled_burn_in_idx:, ch_idx]
+				trim_trace_priors = self.all_priors[scaled_burn_in_idx:, ch_idx]
+
+				print(step_size, trim_trace_x.shape)
+
+				# Overwrite posterior ensemble with rolling averages burn-in index
+				self.posterior_samples = trim_trace_x[::step_size, :][:self.n_ensemble, :]
+				self.posterior_llhs = trim_trace_llhs[::step_size][:self.n_ensemble]
+				self.posterior_priors = trim_trace_priors[::step_size][:self.n_ensemble]
+
+				print(self.posterior_samples.shape)
+				# Calculate the number of function callsd
+				n_chains = self.n_chains
+				self.n_fun_calls = (self.algo_specific_info["burn_in_idx"]+1)*n_chains
+
+
+	def check_ptmcmc_convergence(self, threshold, window_size=100):
+		# get the lowest temperature chain 
+		chain_llhs = self.all_llhs[:, 0]
+
+		if len(chain_llhs) < window_size:
+			return -1
+
+		# Compute rolling averages
+		rolling_avgs = np.convolve(chain_llhs, np.ones(window_size)/window_size, mode='valid')
+
+		for i in range(len(rolling_avgs)):
+			if rolling_avgs[i] > threshold:
+				# From here onward, the avg should stay above threshold
+				if all(avg > threshold for avg in rolling_avgs[i:]):
+					# multiply the index by the downsampling step size
+					downsample_step_size = self.sample_step
+					idx = downsample_step_size * (i + (window_size-1))
+					return idx
+		return -1
+
 
 	def get_sampling_ratio(self, par_bounds, par_idx=0, unlog=True) -> float:
 		"""
@@ -66,7 +153,14 @@ class Result:
 		if self.converged:
 			return max(self.posterior_llhs)
 		else:
-			return np.amax(self.all_llhs)
+			ch_idx = np.argmax(self.algo_specific_info["betas"])
+			#print(self.all_llhs.shape)
+			# subsample chain
+			n_samples = self.n_ensemble
+			subsamples = np.random.choice(self.all_llhs[:, ch_idx],
+								 			size=n_samples,
+											replace=False)
+			return np.amax(subsamples)
 
 class MethodResults:
 	def __init__(self, method) -> None:
