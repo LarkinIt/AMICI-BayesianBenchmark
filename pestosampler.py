@@ -6,6 +6,13 @@ from modelproblem import ModelProblem
 import pypesto.sample as sample
 from pypesto.sample.geweke_test import burn_in_by_sequential_geweke
 
+
+LLH_CONVERGENCE_THRESHOLD = {
+	"Boehm_JProteomeRes2014": -165,
+	"Zhao_QuantBiol2020": -700,
+	"EGFR": 85,
+	"Raia_CancerResearch2011": -480
+}
 class pestoSampler(BayesianInference):
 	def __init__(
 			self, 
@@ -23,15 +30,6 @@ class pestoSampler(BayesianInference):
 
 	def initialize(self):
 		mod_prob = self.model_problem
-
-		print(mod_prob.problem.__dict__.keys())
-		print(mod_prob.problem.objective)
-		#print(f"\n\nOriginal x0: {x0}\n\n")
-		#print(f"FIXED X_IDs: {mod_prob.petab_problem.get_x_ids(free=False)}")
-		#print(f"FREE X_IDs: {mod_prob.petab_problem.get_x_ids(fixed=False)}")
-		#print(f"x nominal scaled: {mod_prob.petab_problem.x_nominal_scaled}")
-		#print(mod_prob.petab_problem.get_lb())
-		#raise ValueError
 		# reset total n_fun_calls
 		mod_prob.n_fun_calls = 0
 		#self.x0 = list(x0)
@@ -39,13 +37,6 @@ class pestoSampler(BayesianInference):
 			internal_sampler=sample.AdaptiveMetropolisSampler(),
 			n_chains=self.n_chains
 			)
-		#print(type(sampler))
-		#sampler.initialize(mod_prob.problem, x0)
-			
-		#for internal_sampler in sampler.samplers:
-		#	print(type(internal_sampler.neglogpost))
-		#	internal_sampler.neglogpost = self.model_problem.log_likelihood_wrapper
-		
 		self.sampler = sampler
 
 	# Courtesy of ChatGPT
@@ -57,8 +48,32 @@ class pestoSampler(BayesianInference):
 				return i
 		return None  # Return None if no valid step size is found
 
+	def check_ptmcmc_convergence(self, threshold, window_size=100):
+		sampler = self.sampler
+		samples = sampler.get_samples()
+		
+		# get the lowest temperature chain index
+		# Note: remember that beta is the inverse of the temperature so 
+		# we want the chain with the max beta
+		ch_idx = np.argmax(samples.betas)
+		chain_llhs = -1*samples.trace_neglogpost[ch_idx, :]
 
-	def create_posterior_ensemble(self):
+		if len(chain_llhs) < window_size:
+			return -1
+
+		# Compute rolling averages
+		rolling_avgs = np.convolve(chain_llhs, np.ones(window_size)/window_size, mode='valid')
+
+		for i in range(len(rolling_avgs)):
+			if rolling_avgs[i] > threshold:
+				# From here onward, the avg should stay above threshold
+				if all(avg > threshold for avg in rolling_avgs[i:]):
+					idx = i + (window_size-1)
+					return idx
+		return -1
+
+
+	def create_posterior_ensemble(self, use_geweke=False):
 		sampler = self.sampler
 		samples = sampler.get_samples()
 		n_iter = self.n_iter
@@ -68,7 +83,17 @@ class pestoSampler(BayesianInference):
 		# we want the chain with the max beta
 		ch_idx = np.argmax(samples.betas)
 		chain = np.array(samples.trace_x[ch_idx, :, :])
-		burn_in_idx = burn_in_by_sequential_geweke(chain)
+		
+		if not use_geweke:
+			# window size for rolling average
+			window_size = 1000
+			threshold = LLH_CONVERGENCE_THRESHOLD[self.model_problem.model_name]
+
+			burn_in_idx = self.check_ptmcmc_convergence(threshold, window_size)
+
+		else:
+			burn_in_idx = burn_in_by_sequential_geweke(chain)
+		
 		diff = (n_iter - burn_in_idx)
 		converged = True
 		if diff < self.n_ensemble:
@@ -88,7 +113,7 @@ class pestoSampler(BayesianInference):
 			posterior_samples = trim_trace_x[::step_size, :][:self.n_ensemble, :]
 			posterior_llhs = trim_trace_llhs[::step_size][:self.n_ensemble]
 			posterior_priors = trim_trace_priors[::step_size][:self.n_ensemble]
-		
+	
 		all_results = {}
 		all_results["converged"] = converged
 		all_results["posterior_samples"] = posterior_samples

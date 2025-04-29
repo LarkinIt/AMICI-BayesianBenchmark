@@ -55,7 +55,6 @@ class Result:
 		diff = (self.n_iter - self.algo_specific_info["burn_in_idx"]) // self.sample_step
 
 		scaled_burn_in_idx = int(self.algo_specific_info["burn_in_idx"] // self.sample_step)
-		print(scaled_burn_in_idx, self.n_iter, diff, self.n_ensemble)
 		if diff < self.n_ensemble:
 			self.converged = False
 			# make empty lists to avert downstream errors
