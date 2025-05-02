@@ -16,21 +16,27 @@ class Result:
 			self.converged = True
 		
 		else:
-			if use_old_burnin:
-				if self.converged:
-					burn_in_idx = self.algo_specific_info["burn_in_idx"]
-					n_chains = self.n_chains
-					self.n_fun_calls = (burn_in_idx+1)*n_chains
-			else:
-				threshold = LLH_CONVERGENCE_THRESHOLD[self.problem]
-				#print(f"For the {self.problem} problem, the llh threshold = {threshold}")
-				burn_in_idx = self.check_ptmcmc_convergence(threshold)
-				print(f"The burn-in index for run {self.seed} is {burn_in_idx} with threshold = {threshold}")
-				self.algo_specific_info["burn_in_idx"] = int(burn_in_idx)
-				if burn_in_idx == -1:
-					self.converged = False
+			if self.converged:
+				burn_in_idx = self.algo_specific_info["burn_in_idx"]
+				n_chains = self.n_chains
+				self.n_fun_calls = (burn_in_idx+1)*n_chains
+			
+			if False:
+				if use_old_burnin:
+					if self.converged:
+						burn_in_idx = self.algo_specific_info["burn_in_idx"]
+						n_chains = self.n_chains
+						self.n_fun_calls = (burn_in_idx+1)*n_chains
 				else:
-					self.create_ptmcmc_posterior_ensemble()
+					threshold = LLH_CONVERGENCE_THRESHOLD[self.problem]
+					#print(f"For the {self.problem} problem, the llh threshold = {threshold}")
+					burn_in_idx = self.check_ptmcmc_convergence(threshold)
+					print(f"The burn-in index for run {self.seed} is {burn_in_idx} with threshold = {threshold}")
+					self.algo_specific_info["burn_in_idx"] = int(burn_in_idx)
+					if burn_in_idx == -1:
+						self.converged = False
+					else:
+						self.create_ptmcmc_posterior_ensemble()
 
 		if not("posterior_weights" in result_dict.keys()):
 			n = len(result_dict["posterior_llhs"])
